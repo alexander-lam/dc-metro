@@ -3,3 +3,4 @@
 
 lib
 boot_out.txt
+src/settings.toml

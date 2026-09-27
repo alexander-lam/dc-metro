@@ -1,28 +1,52 @@
+import os
+
 from adafruit_bitmap_font import bitmap_font
 
 config = {
 	#########################
-	# Network Configuration #
-	#########################
-
-	# WIFI Network SSID
-	'wifi_ssid': '<Your 2.4ghz WiFi SSID>',
-
-	# WIFI Password
-	'wifi_password': '<Your WiFi Password>',
-
-	#########################
 	# Metro Configuration   #
 	#########################
 
-	# Metro Station Code
-	'metro_station_code': 'D02',
-
-	# Metro Train Group
-	'train_group': '2',
+	# List of stations you can cycle through with the up/down buttons.
+	# Pressing "down" past the last one turns the screen off; pressing
+	# "up" from the first one wraps back to "off" too.
+	# 'name' is shown in the popup when you switch to that station, and in
+	# the serial console log.
+	'stations': [
+		{
+			'name': 'McPherson Square West',
+			'metro_station_code': 'C02',
+			'train_group': '2',
+		},
+		{
+			'name': 'McPherson Square East',
+			'metro_station_code': 'C02',
+			'train_group': '1',
+		},
+		{
+			'name': 'Mt Vernon Square South',
+			'metro_station_code': 'E01',
+			'train_group': '2',
+		},
+		{
+			'name': 'Mt Vernon Square North',
+			'metro_station_code': 'E01',
+			'train_group': '1',
+		},
+		{
+			'name': 'Metro Center Red Line West',
+			'metro_station_code': 'A01',
+			'train_group': '2',
+		},
+		{
+			'name': 'Metro Center Red Line East',
+			'metro_station_code': 'A01',
+			'train_group': '1',
+		},
+	],
 
 	# API Key for WMATA
-	'metro_api_key': '<Your WMATA API Key>',
+	'metro_api_key': os.getenv('METRO_API_KEY'),
 
 	#########################
 	# Other Values You      #
@@ -32,6 +56,9 @@ config = {
 	'metro_api_url': 'https://api.wmata.com/StationPrediction.svc/json/GetPrediction/',
 	'metro_api_retries': 2,
 	'refresh_interval': 5, # 5 seconds is a good middle ground for updates, as the processor takes its sweet ol time
+	'button_poll_interval': 0.05, # how often (in seconds) to check the up/down buttons
+	'switch_message_duration': 1.0, # how long (in seconds) the "switching to..." popup stays up
+	'off_message_text': 'Off',
 
 	# Display Settings
 	'matrix_width': 64,
@@ -54,5 +81,5 @@ config = {
 	'train_line_width': 2,
 
 	'min_label_characters': 3,
-	'destination_max_characters': 8,
+	'destination_max_characters': 9,
 }

@@ -2,7 +2,6 @@ import board
 from adafruit_matrixportal.network import Network
 
 from config import config
-from secrets import secrets
 
 # Keeping a global reference for this
 _network = Network(status_neopixel=board.NEOPIXEL)
@@ -23,12 +22,20 @@ class MetroApi:
 
             print('Received response from WMATA api...')
 
+            if 'Trains' not in train_data:
+                # WMATA sends an error payload (bad/missing API key, bad
+                # station code, rate limiting, etc.) instead of raising -
+                # it just won't have a 'Trains' key. Surface it and treat
+                # it like any other failed request.
+                print('Unexpected response from WMATA API: {}'.format(train_data))
+                raise MetroApiOnFireException()
+
             trains = filter(lambda t: t['Group'] == group, train_data['Trains'])
 
             normalized_results = list(map(MetroApi._normalize_train_response, trains))
 
             return normalized_results
-        except RuntimeError:
+        except (RuntimeError, MetroApiOnFireException):
             if retry_attempt < config['metro_api_retries']:
                 print('Failed to connect to WMATA API. Reattempting...')
                 # Recursion for retry logic because I don't care about your stack
